@@ -1,0 +1,109 @@
+==================================================
+        IPv6 ADDRESS TYPES CONFIGURATION LAB
+=================================================
+
+IPv6 Addressing Plan
+--------------------------------------------------
+
+R1 G0/1:
+2001:DB8:ACAD:1::1/64
+
+PC3:
+2001:DB8:ACAD:1::2/64
+Gateway: 2001:DB8:ACAD:1::1
+
+PC4:
+2001:DB8:ACAD:1::3/64
+Gateway: 2001:DB8:ACAD:1::1
+
+
+R2 G0/1:
+2001:DB8:ACAD:2::1/64
+
+PC1:
+2001:DB8:ACAD:2::2/64
+Gateway: 2001:DB8:ACAD:2::1
+
+PC0:
+2001:DB8:ACAD:2::3/64
+Gateway: 2001:DB8:ACAD:2::1
+PC3:
+2001:DB8:ACAD:2::4/64
+Gateway: 2001:DB8:ACAD:2::1
+
+
+R1-R2 Transit Link
+--------------------------------------------------
+
+R1 G0/0:
+2001:DB8:ACAD:10::1/64
+
+R2 G0/0:
+2001:DB8:ACAD:10::2/64
+
+
+Router1 Configuration
+--------------------------------------------------
+
+enable
+configure terminal
+
+ipv6 unicast-routing
+
+interface gigabitEthernet 0/1
+ipv6 address 2001:DB8:ACAD:10::1/64
+no shutdown
+exit
+
+interface gigabitEthernet 0/0
+ipv6 address 2001:DB8:ACAD:1::1/64
+no shutdown
+exit
+
+ipv6 route 2001:DB8:ACAD:2::/64 2001:DB8:ACAD:10::2
+
+end
+
+
+Router2 Configuration
+--------------------------------------------------
+
+enable
+configure terminal
+
+ipv6 unicast-routing
+
+interface gigabitEthernet 0/1
+ipv6 address 2001:DB8:ACAD:10::2/64
+no shutdown
+exit
+
+interface gigabitEthernet 0/0
+ipv6 address 2001:DB8:ACAD:2::1/64
+no shutdown
+exit
+
+ipv6 route 2001:DB8:ACAD:1::/64 2001:DB8:ACAD:10::1
+
+end
+
+
+Verification Commands
+--------------------------------------------------
+
+show ipv6 interface brief
+show ipv6 route
+
+Test from PC2:
+
+ping 2001:DB8:ACAD:1::1
+ping 2001:DB8:ACAD:2::2
+
+Test from PC3:
+
+ping 2001:DB8:ACAD:2::1
+ping 2001:DB8:ACAD:1::2
+
+Prefix Length:
+IPv6 = 128 bits
+/64 = 64 bits Network + 64 bits Host
